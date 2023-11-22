@@ -1,0 +1,114 @@
+ 
+
+
+INSERT INTO person (personid, name, address, contact_details, personnumber, role) VALUES
+('P1001', 'John Doe', '123 Main St', '555-0101', 100001, 'Student'),
+('P1002', 'Jane Smith', '456 Elm St', '555-0202', 100002, 'Student'),
+('P1003', 'Alice Johnson', '789 Oak St', '555-0303', 100003, 'Student'),
+('P1004', 'Bob Brown', '321 Pine St', '555-0404', 100004, 'Student'),
+('P1005', 'Carol White', '654 Maple St', '555-0505', 100005, 'Student'),
+('P1006', 'Joanna Buck', '133 Main St', '555-2101', 100541, 'Student'),
+('P1007', 'Jane Foo', '456 Oak St', '555-1202', 102002, 'Student'),
+('P1008', 'Jacob Johnson', '789 Oak St', '556-0303', 103303, 'Student'),
+('P1009', 'Bob Brown', '320 Pine St', '555-0404', 100004, 'Instructor'),
+('P1010', 'Michael Scott', '653 Maple St', '555-5505', 100205, 'Instructor');
+
+
+
+INSERT INTO student (studentid, siblingid, nr_rented_instruments) VALUES
+('P1001', NULL, 2),
+('P1002', NULL, 0),
+('P1003', 'P1008', 0),
+('P1004', NULL, 1),
+('P1005', NULL, 0),
+('P1006', NULL, 1),
+('P1007', NULL, 1),
+('P1008', 'P1003', 1);
+
+INSERT INTO instructor (instructorid, instruments_taught) VALUES
+('P1009', 'Piano'),
+('P1010', 'Violin' || ', ' || 'Guitar');
+
+
+INSERT INTO lesson (lessonid, lesson_type, level, instrument, time_slot, max_students, min_students, current_enrolled, instructorid) VALUES
+('L1001', 'Group', 'Beginner', 'Piano', '2023-01-01 10:00:00', 10, 5, 5, 'P1009'),
+('L1002', 'Private', 'Intermediate', 'Violin', '2023-01-01 11:00:00', 1, 1, 1, 'P1010'),
+('L1003', 'Private', 'Advanced', 'Guitar', '2023-01-01 13:00:00', 1, 1, 1, 'P1010');
+
+
+
+
+
+INSERT INTO pricing (price_list, level, sibling_discount, type) VALUES
+(500.00, 'Beginner', false, 'Solo'),
+(400.00, 'Beginner', true, 'Solo'), 
+(400.00, 'Beginner', false, 'Group'),
+(350.00, 'Beginner', true, 'Group'),
+(350.00, 'Beginner', false, 'Ensemble'),
+(325.00, 'Beginner', true, 'Ensemble'), 
+ 
+(650.00, 'Intermediate', false, 'Solo'),
+(520.00, 'Intermediate', true, 'Solo'),
+(600.00, 'Intermediate', false, 'Group'),
+(470.00, 'Intermediate', true, 'Group'),
+(550.00, 'Intermediate', false, 'Ensemble'),
+(420.00, 'Intermediate', true, 'Ensemble'),
+  
+(800.00, 'Advanced', false, 'Solo'),
+(640.00, 'Advanced', true, 'Solo'),
+(700.00, 'Advanced', false, 'Group'),
+(650.00, 'Advanced', true, 'Group'),
+(660.00, 'Advanced', false, 'Ensemble'),
+(600.00, 'Advanced', true, 'Ensemble');
+
+
+INSERT INTO solo (soloid) VALUES
+('L1002'),  
+('L1003');
+
+INSERT INTO group_lesson (group_lessonid) VALUES
+('L1001');
+
+
+INSERT INTO payment (paymentid, payment_data, amount, personid) VALUES
+('PMT1001', 'paytoP1009', 1900.00, 'P1009'),
+('PMT1002', 'P1001pay', 400.00, 'P1001'),
+('PMT1003', 'paytoP1010', 1450.00, 'P1010'),
+('PMT1004', 'P1005pay', 650.00, 'P1005'),
+('PMT1005', 'P1003pay', 350.00, 'P1003'),
+('PMT1006', 'P1004pay', 800.00, 'P1004'),
+('PMT1007', 'P1008pay', 350.00, 'P1008'),
+('PMT1008', 'P1002pay', 400.00, 'P1002'),
+('PMT1009', 'P1006pay', 400.00, 'P1006');
+
+
+INSERT INTO student_payment (paymentid, studentid) VALUES
+('PMT1002', 'P1001'),
+('PMT1004', 'P1005'),
+('PMT1005', 'P1003'),
+('PMT1006', 'P1004'),
+('PMT1007', 'P1008'),
+('PMT1008', 'P1002'),
+('PMT1009', 'P1006');
+
+
+
+INSERT INTO instructor_payment (paymentid, instructorid) VALUES
+('PMT1001', 'P1009'),
+('PMT1003', 'P1010');
+
+INSERT INTO instrument_rental (rentalid, instrument, rental_start_date, rental_end_date, studentid, rental_cost) 
+VALUES
+('R1002', 'Violin', '2023-06-05', NULL, 'P1008', NULL),
+('R1003', 'Kazoo', '2023-07-05', NULL, 'P1004', NULL),
+('R1004', 'Didgeridoo', '2023-08-08', NULL, 'P1007', NULL);   
+
+
+INSERT INTO student_lesson (studentid, lessonid, siblingid) VALUES
+('P1001', 'L1001', NULL),
+('P1002', 'L1001', NULL),
+('P1003', 'L1001', 'P1008'),
+('P1006', 'L1001', NULL),
+('P1008', 'L1001', 'P1003'),
+('P1005', 'L1002', NULL),
+('P1004', 'L1003', NULL);
