@@ -52,7 +52,8 @@ INSERT INTO student (studentID, name, personnr, contact_info, address, nr_rented
 ('STU007', 'Laura Wilson', 3456701234, 'laura.wilson@email.com', '4568 Harmony St', 2),
 ('STU008', 'Ryan Moore', 4567801234, 'ryan.moore@email.com', '5679 Melody Ave', 1),
 ('STU009', 'Samantha Taylor', 5678901234, 'samantha.taylor@email.com', '6780 Student Rd', 0),
-('STU010', 'Nathan Scott', 6789012345, 'nathan.scott@email.com', '7891 Learner Blvd', 1);
+('STU010', 'Nathan Scott', 6789012345, 'nathan.scott@email.com', '7891 Learner Blvd', 1),
+('STU011', 'Nathan Jacobs', 6789712345, 'nathan.jacobs@email.com', '789o Leper St', 0);
 
 
 
