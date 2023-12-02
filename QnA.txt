@@ -93,10 +93,11 @@ ORDER BY No_of_Siblings;
 
  no_of_siblings | no_of_students
 ----------------+----------------
+              0 |              1
               1 |              7
               2 |              2
               3 |              1
-(3 rows)
+(4 rows)
 
 
 ## data in table sibling ##
@@ -120,6 +121,33 @@ ORDER BY No_of_Siblings;
  STU008    | STU001
 (14 rows)
 
+## data in table student ## 
+
+ studentid |      name       |  personnr  |       contact_info        |      address      | nr_rented_instruments
+-----------+-----------------+------------+---------------------------+-------------------+-----------------------
+ STU001    | David Green     | 4567890123 | david.green@email.com     | 2345 Student Rd   |
+          1
+ STU002    | Eva White       | 5678901234 | eva.white@email.com       | 3456 Learner Blvd |
+          2
+ STU003    | Hannah Morris   | 6789012345 | hannah.morris@email.com   | 3456 Harmony St   |
+          0
+ STU004    | Ian Grant       | 7890123456 | ian.grant@email.com       | 4567 Melody Ave   |
+          1
+ STU005    | Julia Martin    | 1234506789 | julia.martin@email.com    | 1235 Student Rd   |
+          1
+ STU006    | Kevin Brown     | 2345601234 | kevin.brown@email.com     | 3457 Learner Blvd |
+          0
+ STU007    | Laura Wilson    | 3456701234 | laura.wilson@email.com    | 4568 Harmony St   |
+          2
+ STU008    | Ryan Moore      | 4567801234 | ryan.moore@email.com      | 5679 Melody Ave   |
+          1
+ STU009    | Samantha Taylor | 5678901234 | samantha.taylor@email.com | 6780 Student Rd   |
+          0
+ STU010    | Nathan Scott    | 6789012345 | nathan.scott@email.com    | 7891 Learner Blvd |
+          1
+ STU011    | Nathan Jacobs   | 6789712345 | nathan.jacobs@email.com   | 789o Leper St     |
+          0
+(11 rows)
 
 
 
