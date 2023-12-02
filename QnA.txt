@@ -1,0 +1,295 @@
+
+1)
+## query ##
+
+SELECT 
+    EXTRACT(MONTH FROM time_slot) AS Month, 
+    COUNT(*) AS Total,
+    COUNT(CASE WHEN lesson_type = 'Individual' THEN 1 END) AS Individual,
+    COUNT(CASE WHEN lesson_type = 'Group' THEN 1 END) AS Group,
+    COUNT(CASE WHEN lesson_type = 'Ensemble' THEN 1 END) AS Ensemble
+FROM lesson
+WHERE EXTRACT(YEAR FROM time_slot) = 2023 
+GROUP BY EXTRACT(MONTH FROM time_slot)
+ORDER BY Month;
+
+## output ##
+
+ month | total | individual | group | ensemble
+-------+-------+------------+-------+----------
+     1 |     4 |          2 |     2 |        0
+     2 |     1 |          0 |     1 |        0
+     3 |     2 |          1 |     0 |        1
+    12 |    13 |          0 |     0 |       13
+(4 rows)
+
+
+## data in table lesson ##
+
+ lessonid | lesson_type |    level     | instrument |      time_slot      | max_students | min_students | current_enrolled | priceid | tgt_genre | instructorid
+----------+-------------+--------------+------------+---------------------+--------------+--------------+------------------+---------+-----------+--------------
+ LESS01   | Group       | Beginner     | Piano      | 2023-01-01 10:00:00 |           10 |
+5 |                8 | PRICE01 | Classical | INST001
+ LESS03   | Group       | Beginner     | Drums      | 2023-01-02 10:00:00 |            8 |
+4 |                6 | PRICE01 | Jazz      | INST004
+ LESS05   | Group       | Beginner     | Piano      | 2023-02-01 10:00:00 |           10 |
+5 |                8 | PRICE01 | Classical | INST001
+ LESS02   | Individual  | Intermediate | Guitar     | 2023-01-01 11:00:00 |            1 |
+1 |                1 | PRICE02 |           | INST002
+ LESS04   | Individual  | Intermediate | Flute      | 2023-01-02 11:00:00 |            1 |
+1 |                1 | PRICE02 |           | INST005
+ LESS06   | Individual  | Intermediate | Guitar     | 2023-03-01 11:00:00 |            1 |
+1 |                1 | PRICE02 |           | INST002
+ LESS07   | Ensemble    | Intermediate | Any        | 2023-03-01 11:00:00 |            1 |
+1 |                1 | PRICE02 | Rock      | INST001
+ LESS08   | Ensemble    | Intermediate | Any        | 2023-12-01 10:00:00 |           10 |
+3 |                9 | PRICE02 | Rock      | INST001
+ LESS09   | Ensemble    | Beginner     | Any        | 2023-12-05 14:00:00 |           15 |
+5 |               14 | PRICE03 | Jazz      | INST002
+ LESS11   | Ensemble    | Intermediate | Any        | 2023-12-15 11:00:00 |            8 |
+6 |                6 | PRICE02 | Pop       | INST004
+ LESS12   | Ensemble    | Beginner     | Any        | 2023-12-20 09:00:00 |           10 |
+3 |                5 | PRICE03 | Folk      | INST005
+ LESS15   | Ensemble    | Advanced     | Any        | 2023-12-07 15:00:00 |            8 |
+1 |                2 | PRICE02 | Rock      | INST004
+ LESS16   | Ensemble    | Beginner     | Any        | 2023-12-08 10:00:00 |           10 |
+1 |                9 | PRICE03 | Folk      | INST005
+ LESS17   | Ensemble    | Intermediate | Any        | 2023-12-12 14:00:00 |           15 |
+1 |               15 | PRICE01 | Classical | INST001
+ LESS18   | Ensemble    | Advanced     | Any        | 2023-12-13 16:00:00 |           12 |
+1 |               12 | PRICE02 | Pop       | INST002
+ LESS19   | Ensemble    | Beginner     | Any        | 2023-12-18 11:00:00 |            8 |
+1 |                1 | PRICE03 | Blues     | INST003
+ LESS20   | Ensemble    | Intermediate | Any        | 2023-12-19 09:00:00 |           10 |
+1 |                0 | PRICE01 | Jazz      | INST004
+ LESS13   | Ensemble    | Beginner     | Any        | 2023-12-04 09:00:00 |           10 |
+1 |               10 | PRICE03 | Blues     | INST002
+ LESS14   | Ensemble    | Intermediate | Any        | 2023-12-04 09:00:00 |           12 |
+1 |               11 | PRICE01 | Jazz      | INST003
+ LESS10   | Ensemble    | Advanced     | Any        | 2023-12-08 16:15:00 |           12 |
+8 |               10 | PRICE01 | Classical | INST003
+(20 rows)
+
+2)
+## query ##
+
+SELECT 
+    COALESCE(sib_count.No_of_Siblings, 0) AS No_of_Siblings, 
+    COUNT(*) AS No_of_Students
+FROM student
+LEFT JOIN (
+    SELECT 
+        studentID, 
+        COUNT(siblingID) AS No_of_Siblings
+    FROM sibling
+    GROUP BY studentID
+) AS sib_count ON student.studentID = sib_count.studentID
+GROUP BY sib_count.No_of_Siblings
+ORDER BY No_of_Siblings;
+
+## output ##
+
+ no_of_siblings | no_of_students
+----------------+----------------
+              1 |              7
+              2 |              2
+              3 |              1
+(3 rows)
+
+
+## data in table sibling ##
+
+
+ studentid | siblingid
+-----------+-----------
+ STU001    | STU002
+ STU002    | STU001
+ STU001    | STU005
+ STU005    | STU001
+ STU002    | STU006
+ STU006    | STU002
+ STU003    | STU007
+ STU007    | STU003
+ STU004    | STU008
+ STU008    | STU004
+ STU009    | STU010
+ STU010    | STU009
+ STU001    | STU008
+ STU008    | STU001
+(14 rows)
+
+
+
+
+
+
+
+
+3)
+## query ##
+
+
+SELECT 
+    instructor.instructorID,
+    SPLIT_PART(instructor.name, ' ', 1) AS "First Name",
+    SPLIT_PART(instructor.name, ' ', 2) AS "Last Name",
+    COUNT(*) AS "No of Lessons"
+FROM lesson
+JOIN instructor ON lesson.instructorID = instructor.instructorID
+WHERE EXTRACT(MONTH FROM lesson.time_slot) = 3  
+  AND EXTRACT(YEAR FROM lesson.time_slot) = 2023  
+GROUP BY instructor.instructorID, instructor.name
+HAVING COUNT(*) > 0
+ORDER BY "No of Lessons" DESC, "Last Name", "First Name";
+
+## NOTE ##
+For a different month, change the 3 in the line 'WHERE EXTRACT(MONTH FROM lesson.time_slot) = ' to the number representing the number of the month in the calendar.
+
+
+## output (for March as in query) ##
+
+ instructorid | First Name | Last Name | No of Lessons
+--------------+------------+-----------+---------------
+ INST002      | Bob        | Johnson   |             1
+ INST001      | Alice      | Smith     |             1
+(2 rows)
+
+## data in table lesson ##
+
+ lessonid | lesson_type |    level     | instrument |      time_slot      | max_students | min_students | current_enrolled | priceid | tgt_genre | instructorid
+----------+-------------+--------------+------------+---------------------+--------------+--------------+------------------+---------+-----------+--------------
+ LESS01   | Group       | Beginner     | Piano      | 2023-01-01 10:00:00 |           10 |
+5 |                8 | PRICE01 | Classical | INST001
+ LESS03   | Group       | Beginner     | Drums      | 2023-01-02 10:00:00 |            8 |
+4 |                6 | PRICE01 | Jazz      | INST004
+ LESS05   | Group       | Beginner     | Piano      | 2023-02-01 10:00:00 |           10 |
+5 |                8 | PRICE01 | Classical | INST001
+ LESS02   | Individual  | Intermediate | Guitar     | 2023-01-01 11:00:00 |            1 |
+1 |                1 | PRICE02 |           | INST002
+ LESS04   | Individual  | Intermediate | Flute      | 2023-01-02 11:00:00 |            1 |
+1 |                1 | PRICE02 |           | INST005
+ LESS06   | Individual  | Intermediate | Guitar     | 2023-03-01 11:00:00 |            1 |
+1 |                1 | PRICE02 |           | INST002
+ LESS07   | Ensemble    | Intermediate | Any        | 2023-03-01 11:00:00 |            1 |
+1 |                1 | PRICE02 | Rock      | INST001
+ LESS08   | Ensemble    | Intermediate | Any        | 2023-12-01 10:00:00 |           10 |
+3 |                9 | PRICE02 | Rock      | INST001
+ LESS09   | Ensemble    | Beginner     | Any        | 2023-12-05 14:00:00 |           15 |
+5 |               14 | PRICE03 | Jazz      | INST002
+ LESS11   | Ensemble    | Intermediate | Any        | 2023-12-15 11:00:00 |            8 |
+6 |                6 | PRICE02 | Pop       | INST004
+ LESS12   | Ensemble    | Beginner     | Any        | 2023-12-20 09:00:00 |           10 |
+3 |                5 | PRICE03 | Folk      | INST005
+ LESS15   | Ensemble    | Advanced     | Any        | 2023-12-07 15:00:00 |            8 |
+1 |                2 | PRICE02 | Rock      | INST004
+ LESS16   | Ensemble    | Beginner     | Any        | 2023-12-08 10:00:00 |           10 |
+1 |                9 | PRICE03 | Folk      | INST005
+ LESS17   | Ensemble    | Intermediate | Any        | 2023-12-12 14:00:00 |           15 |
+1 |               15 | PRICE01 | Classical | INST001
+ LESS18   | Ensemble    | Advanced     | Any        | 2023-12-13 16:00:00 |           12 |
+1 |               12 | PRICE02 | Pop       | INST002
+ LESS19   | Ensemble    | Beginner     | Any        | 2023-12-18 11:00:00 |            8 |
+1 |                1 | PRICE03 | Blues     | INST003
+ LESS20   | Ensemble    | Intermediate | Any        | 2023-12-19 09:00:00 |           10 |
+1 |                0 | PRICE01 | Jazz      | INST004
+ LESS13   | Ensemble    | Beginner     | Any        | 2023-12-04 09:00:00 |           10 |
+1 |               10 | PRICE03 | Blues     | INST002
+ LESS14   | Ensemble    | Intermediate | Any        | 2023-12-04 09:00:00 |           12 |
+1 |               11 | PRICE01 | Jazz      | INST003
+ LESS10   | Ensemble    | Advanced     | Any        | 2023-12-08 16:15:00 |           12 |
+8 |               10 | PRICE01 | Classical | INST003
+(20 rows)
+
+## data in table instructor ## 
+
+ instructorid | instruments_taught |    name     |  personnr  |     contact_info      |     address      | instrument_type
+--------------+--------------------+-------------+------------+-----------------------+------------------+-----------------
+ INST001      | Piano              | Alice Smith | 1234567890 | alice.smith@email.com | 1234 Music Lane  | Keyboard
+ INST002      | Guitar             | Bob Johnson | 2345678901 | bob.johnson@email.com | 5678 Guitar St   | String
+ INST003      | Violin             | Cathy Brown | 3456789012 | cathy.brown@email.com | 9012 Violin Ave  | String
+ INST004      | Drums              | Eliot King  | 4567890123 | eliot.king@email.com  | 1234 Drum Circle | Percussion
+ INST005      | Flute              | Fiona Lee   | 5678901234 | fiona.lee@email.com   | 5678 Wind Way    | Woodwind
+ INST006      | Cello              | George Kay  | 6789012345 | george.kay@email.com  | 9012 Cello Court | String
+(6 rows)
+
+
+
+
+4) 
+## query ##
+
+
+SELECT 
+    TO_CHAR(time_slot, 'Day') AS Day, 
+    tgt_genre AS Genre, 
+    CASE 
+        WHEN max_students - current_enrolled = 0 THEN 'No Seats'
+        WHEN max_students - current_enrolled <= 2 THEN '1 or 2 Seats'
+        ELSE 'Many Seats'
+    END AS "No of Free Seats"
+FROM lesson
+WHERE lesson_type = 'Ensemble'
+  AND time_slot BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
+ORDER BY Genre, Day;
+
+## output ##
+
+    day    | genre | No of Free Seats
+-----------+-------+------------------
+ Monday    | Blues | No Seats
+ Monday    | Jazz  | 1 or 2 Seats
+ Tuesday   | Jazz  | 1 or 2 Seats
+ Friday    | Rock  | 1 or 2 Seats
+ Thursday  | Rock  | Many Seats
+(5 rows)
+
+## NOTE ##
+This output may change depending on when the assignment is graded as the query uses the current date and finds lessons within 7 days ahead
+
+## data in table lesson ##
+
+ lessonid | lesson_type |    level     | instrument |      time_slot      | max_students | min_students | current_enrolled | priceid | tgt_genre | instructorid
+----------+-------------+--------------+------------+---------------------+--------------+--------------+------------------+---------+-----------+--------------
+ LESS01   | Group       | Beginner     | Piano      | 2023-01-01 10:00:00 |           10 |
+5 |                8 | PRICE01 | Classical | INST001
+ LESS03   | Group       | Beginner     | Drums      | 2023-01-02 10:00:00 |            8 |
+4 |                6 | PRICE01 | Jazz      | INST004
+ LESS05   | Group       | Beginner     | Piano      | 2023-02-01 10:00:00 |           10 |
+5 |                8 | PRICE01 | Classical | INST001
+ LESS02   | Individual  | Intermediate | Guitar     | 2023-01-01 11:00:00 |            1 |
+1 |                1 | PRICE02 |           | INST002
+ LESS04   | Individual  | Intermediate | Flute      | 2023-01-02 11:00:00 |            1 |
+1 |                1 | PRICE02 |           | INST005
+ LESS06   | Individual  | Intermediate | Guitar     | 2023-03-01 11:00:00 |            1 |
+1 |                1 | PRICE02 |           | INST002
+ LESS07   | Ensemble    | Intermediate | Any        | 2023-03-01 11:00:00 |            1 |
+1 |                1 | PRICE02 | Rock      | INST001
+ LESS08   | Ensemble    | Intermediate | Any        | 2023-12-01 10:00:00 |           10 |
+3 |                9 | PRICE02 | Rock      | INST001
+ LESS09   | Ensemble    | Beginner     | Any        | 2023-12-05 14:00:00 |           15 |
+5 |               14 | PRICE03 | Jazz      | INST002
+ LESS11   | Ensemble    | Intermediate | Any        | 2023-12-15 11:00:00 |            8 |
+6 |                6 | PRICE02 | Pop       | INST004
+ LESS12   | Ensemble    | Beginner     | Any        | 2023-12-20 09:00:00 |           10 |
+3 |                5 | PRICE03 | Folk      | INST005
+ LESS15   | Ensemble    | Advanced     | Any        | 2023-12-07 15:00:00 |            8 |
+1 |                2 | PRICE02 | Rock      | INST004
+ LESS16   | Ensemble    | Beginner     | Any        | 2023-12-08 10:00:00 |           10 |
+1 |                9 | PRICE03 | Folk      | INST005
+ LESS17   | Ensemble    | Intermediate | Any        | 2023-12-12 14:00:00 |           15 |
+1 |               15 | PRICE01 | Classical | INST001
+ LESS18   | Ensemble    | Advanced     | Any        | 2023-12-13 16:00:00 |           12 |
+1 |               12 | PRICE02 | Pop       | INST002
+ LESS19   | Ensemble    | Beginner     | Any        | 2023-12-18 11:00:00 |            8 |
+1 |                1 | PRICE03 | Blues     | INST003
+ LESS20   | Ensemble    | Intermediate | Any        | 2023-12-19 09:00:00 |           10 |
+1 |                0 | PRICE01 | Jazz      | INST004
+ LESS13   | Ensemble    | Beginner     | Any        | 2023-12-04 09:00:00 |           10 |
+1 |               10 | PRICE03 | Blues     | INST002
+ LESS14   | Ensemble    | Intermediate | Any        | 2023-12-04 09:00:00 |           12 |
+1 |               11 | PRICE01 | Jazz      | INST003
+ LESS10   | Ensemble    | Advanced     | Any        | 2023-12-08 16:15:00 |           12 |
+8 |               10 | PRICE01 | Classical | INST003
+(20 rows)
+
+

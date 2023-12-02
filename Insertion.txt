@@ -1,0 +1,139 @@
+INSERT INTO instructor (instructorID, instruments_taught, name, personnr, contact_info, address, instrument_type) VALUES
+('INST001', 'Piano', 'Alice Smith', 1234567890, 'alice.smith@email.com', '1234 Music Lane', 'Keyboard'),
+('INST002', 'Guitar', 'Bob Johnson', 2345678901, 'bob.johnson@email.com', '5678 Guitar St', 'String'),
+('INST003', 'Violin', 'Cathy Brown', 3456789012, 'cathy.brown@email.com', '9012 Violin Ave', 'String');
+
+INSERT INTO instructor (instructorID, instruments_taught, name, personnr, contact_info, address, instrument_type) VALUES
+('INST004', 'Drums', 'Eliot King', 4567890123, 'eliot.king@email.com', '1234 Drum Circle', 'Percussion'),
+('INST005', 'Flute', 'Fiona Lee', 5678901234, 'fiona.lee@email.com', '5678 Wind Way', 'Woodwind'),
+('INST006', 'Cello', 'George Kay', 6789012345, 'george.kay@email.com', '9012 Cello Court', 'String');
+
+
+
+INSERT INTO instrument (instrumentID, type, brand, model, nr_stocked) VALUES
+('INST001', 'Piano', 'Yamaha', 'U1', 5),
+('INST002', 'Guitar', 'Fender', 'Stratocaster', 10),
+('INST003', 'Violin', 'Stradivarius', 'Model 100', 8);
+
+INSERT INTO instrument (instrumentID, type, brand, model, nr_stocked) VALUES
+('INST004', 'Drums', 'Pearl', 'Export', 3),
+('INST005', 'Flute', 'Yamaha', 'YFL-222', 6),
+('INST006', 'Cello', 'Stradivari', 'Cello Model', 4);
+
+INSERT INTO rental_pricing (rental_priceID, instrumentID, price, valid_from, valid_to) VALUES
+('RENT01', 'INST001', 25.0, '2023-01-01', '2023-06-30'),
+('RENT02', 'INST002', 15.0, '2023-01-01', '2023-06-30'),
+('RENT03', 'INST003', 20.0, '2023-01-01', '2023-06-30');
+
+
+INSERT INTO rental_pricing (rental_priceID, instrumentID, price, valid_from, valid_to) VALUES
+('RENT04', 'INST004', 30.0, '2023-01-01', '2023-06-30'),
+('RENT05', 'INST005', 20.0, '2023-01-01', '2023-06-30'),
+('RENT06', 'INST006', 35.0, '2023-01-01', '2023-06-30');
+
+
+
+INSERT INTO pricing (priceID, level, sibling_price, lesson_type, valid_from, valid_to, amount) VALUES
+('PRICE01', 'Beginner', 80.0, 'Group', '2023-01-01', '2023-12-31', 200.0),
+('PRICE02', 'Intermediate', 100.0, 'Individual', '2023-01-01', '2023-12-31', 250.0),
+('PRICE03', 'Advanced', 120.0, 'Group', '2023-01-01', '2023-12-31', 300.0);
+
+INSERT INTO student (studentID, name, personnr, contact_info, address, nr_rented_instruments) VALUES
+('STU001', 'David Green', 4567890123, 'david.green@email.com', '2345 Student Rd', 1),
+('STU002', 'Eva White', 5678901234, 'eva.white@email.com', '3456 Learner Blvd', 2);
+
+INSERT INTO student (studentID, name, personnr, contact_info, address, nr_rented_instruments) VALUES
+('STU003', 'Hannah Morris', 6789012345, 'hannah.morris@email.com', '3456 Harmony St', 0),
+('STU004', 'Ian Grant', 7890123456, 'ian.grant@email.com', '4567 Melody Ave', 1);
+
+INSERT INTO student (studentID, name, personnr, contact_info, address, nr_rented_instruments) VALUES
+('STU005', 'Julia Martin', 1234506789, 'julia.martin@email.com', '1235 Student Rd', 1),
+('STU006', 'Kevin Brown', 2345601234, 'kevin.brown@email.com', '3457 Learner Blvd', 0),
+('STU007', 'Laura Wilson', 3456701234, 'laura.wilson@email.com', '4568 Harmony St', 2),
+('STU008', 'Ryan Moore', 4567801234, 'ryan.moore@email.com', '5679 Melody Ave', 1),
+('STU009', 'Samantha Taylor', 5678901234, 'samantha.taylor@email.com', '6780 Student Rd', 0),
+('STU010', 'Nathan Scott', 6789012345, 'nathan.scott@email.com', '7891 Learner Blvd', 1);
+
+
+
+INSERT INTO contact_person (studentID, contact_name, contact_contact_info) VALUES
+('STU001', 'Linda Green', 'linda.green@email.com'),
+('STU002', 'Michael White', 'michael.white@email.com'),
+('STU003', 'Sarah Morris', 'sarah.morris@email.com'),
+('STU004', 'James Grant', 'james.grant@email.com');
+
+INSERT INTO instrument_rental (rentalID, instrumentID, rental_priceID, studentID, rental_start_date, rental_end_date) VALUES
+('RENTAL01', 'INST001', 'RENT01', 'STU001', '2023-01-01', '2023-06-30'),
+('RENTAL02', 'INST002', 'RENT02', 'STU002', '2023-01-01', '2023-06-30');
+
+INSERT INTO instrument_rental (rentalID, instrumentID, rental_priceID, studentID, rental_start_date, rental_end_date) VALUES
+('RENTAL03', 'INST005', 'RENT05', 'STU004', '2023-01-01', '2023-06-30'),
+('RENTAL04', 'INST006', 'RENT06', 'STU003', '2023-01-01', '2023-06-30');
+
+
+INSERT INTO lesson (lessonID, lesson_type, level, instrument, time_slot, max_students, min_students, current_enrolled, priceID, tgt_genre, instructorID) VALUES
+('LESS01', 'Group', 'Beginner', 'Piano', '2023-01-01 10:00:00', 10, 5, 8, 'PRICE01', 'Classical', 'INST001'),
+('LESS02', 'Individual', 'Intermediate', 'Guitar', '2023-01-01 11:00:00', 1, 1, 1, 'PRICE02', 'NULL', 'INST002'),
+('LESS03', 'Group', 'Beginner', 'Drums', '2023-01-02 10:00:00', 8, 4, 6, 'PRICE01', 'Jazz', 'INST004'),
+('LESS04', 'Individual', 'Intermediate', 'Flute', '2023-01-02 11:00:00', 1, 1, 1, 'PRICE02', 'NULL', 'INST005'),
+('LESS05', 'Group', 'Beginner', 'Piano', '2023-02-01 10:00:00', 10, 5, 8, 'PRICE01', 'Classical', 'INST001'),
+('LESS06', 'Individual', 'Intermediate', 'Guitar', '2023-03-01 11:00:00', 1, 1, 1, 'PRICE02', NULL, 'INST002'),
+('LESS07', 'Ensemble', 'Intermediate', 'Any', '2023-03-01 11:00:00', 1, 1, 1, 'PRICE02', 'Rock', 'INST001');
+
+INSERT INTO lesson (lessonid, lesson_type, level, instrument, time_slot, max_students, min_students, current_enrolled, priceid, tgt_genre, instructorid) VALUES
+('LESS08', 'Ensemble', 'Intermediate', 'Any', '2023-12-01 10:00:00', 10, 3,  9, 'PRICE02', 'Rock', 'INST001'),
+('LESS09', 'Ensemble', 'Beginner', 'Any', '2023-12-05 14:00:00', 15, 5, 14, 'PRICE03', 'Jazz', 'INST002'),
+('LESS10', 'Ensemble', 'Advanced', 'Any', '2023-12-10 16:00:00', 12, 8, 10, 'PRICE01', 'Classical', 'INST003'),
+('LESS11', 'Ensemble', 'Intermediate', 'Any', '2023-12-15 11:00:00', 8, 6,  6, 'PRICE02', 'Pop', 'INST004'),
+('LESS12', 'Ensemble', 'Beginner', 'Any', '2023-12-20 09:00:00', 10, 3,  5, 'PRICE03', 'Folk', 'INST005');
+
+INSERT INTO lesson (lessonid, lesson_type, level, instrument, time_slot, max_students, min_students, current_enrolled, priceid, tgt_genre, instructorid) VALUES
+('LESS13', 'Ensemble', 'Beginner', 'Any', '2023-12-02 09:00:00', 10, 1, 10, 'PRICE03', 'Blues', 'INST002'),
+('LESS14', 'Ensemble', 'Intermediate', 'Any', '2023-12-03 13:00:00', 12, 1, 11, 'PRICE01', 'Jazz', 'INST003'),
+('LESS15', 'Ensemble', 'Advanced', 'Any', '2023-12-07 15:00:00', 8, 1,  2, 'PRICE02', 'Rock', 'INST004'),
+('LESS16', 'Ensemble', 'Beginner', 'Any', '2023-12-08 10:00:00', 10, 1,  9, 'PRICE03', 'Folk', 'INST005'),
+('LESS17', 'Ensemble', 'Intermediate', 'Any', '2023-12-12 14:00:00', 15, 1, 15, 'PRICE01', 'Classical', 'INST001'),
+('LESS18', 'Ensemble', 'Advanced', 'Any', '2023-12-13 16:00:00', 12, 1, 12, 'PRICE02', 'Pop', 'INST002'),
+('LESS19', 'Ensemble', 'Beginner', 'Any', '2023-12-18 11:00:00', 8, 1,  1, 'PRICE03', 'Blues', 'INST003'),
+('LESS20', 'Ensemble', 'Intermediate', 'Any', '2023-12-19 09:00:00', 10, 1,  0, 'PRICE01', 'Jazz', 'INST004');
+
+
+
+
+INSERT INTO payment (paymentID, amount, priceID) VALUES
+('PAY001', 200.0, 'PRICE01'),
+('PAY002', 150.0, 'PRICE02');
+
+INSERT INTO sibling (studentID, siblingID) VALUES
+('STU001', 'STU002'),
+('STU002', 'STU001');
+
+INSERT INTO sibling (studentID, siblingID) VALUES
+('STU001', 'STU005'),
+('STU005', 'STU001'),
+('STU002', 'STU006'),
+('STU006', 'STU002'),
+('STU003', 'STU007'),
+('STU007', 'STU003'),
+('STU004', 'STU008'),
+('STU008', 'STU004'),
+('STU009', 'STU010'),
+('STU010', 'STU009');
+
+INSERT INTO sibling (studentID, siblingID) VALUES
+('STU001', 'STU008'),
+('STU008', 'STU001');
+
+
+
+INSERT INTO student_lesson (lessonID, studentID) VALUES
+('LESS01', 'STU001'),
+('LESS02', 'STU002');
+
+INSERT INTO student_payment (paymentID, studentID) VALUES
+('PAY001', 'STU001'),
+('PAY002', 'STU002');
+
+INSERT INTO instructor_payment (paymentID, instructorID) VALUES
+('PAY001', 'INST001'),
+('PAY002', 'INST002');

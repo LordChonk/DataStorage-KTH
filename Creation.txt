@@ -1,0 +1,172 @@
+CREATE TABLE instructor (
+ instructorID VARCHAR(10) NOT NULL,
+ instruments_taught VARCHAR(30) NOT NULL,
+ name VARCHAR(50) NOT NULL,
+ personnr NUMERIC(10) NOT NULL,
+ contact_info VARCHAR(100) NOT NULL,
+ address VARCHAR(50) NOT NULL,
+ instrument_type VARCHAR(30) NOT NULL
+);
+
+ALTER TABLE instructor ADD CONSTRAINT PK_instructor PRIMARY KEY (instructorID);
+
+
+CREATE TABLE instrument (
+ instrumentID VARCHAR(10) NOT NULL,
+ type VARCHAR(50) NOT NULL,
+ brand VARCHAR(20),
+ model VARCHAR(30) NOT NULL,
+ nr_stocked INT NOT NULL
+);
+
+ALTER TABLE instrument ADD CONSTRAINT PK_instrument PRIMARY KEY (instrumentID);
+
+
+CREATE TABLE pricing (
+ priceID VARCHAR(10) NOT NULL,
+ level VARCHAR(20) NOT NULL,
+ sibling_price FLOAT(10) NOT NULL,
+ lesson_type VARCHAR(10) NOT NULL,
+ valid_from DATE NOT NULL,
+ valid_to DATE NOT NULL,
+ amount FLOAT(10)
+);
+
+ALTER TABLE pricing ADD CONSTRAINT PK_pricing PRIMARY KEY (priceID);
+
+
+CREATE TABLE rental_pricing (
+ rental_priceID VARCHAR(10) NOT NULL,
+ instrumentID VARCHAR(10) NOT NULL,
+ price FLOAT(10) NOT NULL,
+ valid_from DATE NOT NULL,
+ valid_to DATE NOT NULL
+);
+
+ALTER TABLE rental_pricing ADD CONSTRAINT PK_rental_pricing PRIMARY KEY (rental_priceID);
+
+
+CREATE TABLE student (
+ studentID VARCHAR(10) NOT NULL,
+ name VARCHAR(50) NOT NULL,
+ personnr NUMERIC(12) NOT NULL,
+ contact_info VARCHAR(100) NOT NULL,
+ address VARCHAR(50) NOT NULL,
+ nr_rented_instruments INT NOT NULL
+);
+
+ALTER TABLE student ADD CONSTRAINT PK_student PRIMARY KEY (studentID);
+
+
+CREATE TABLE contact_person (
+ studentID VARCHAR(10) NOT NULL,
+ contact_name VARCHAR(50),
+ contact_contact_info VARCHAR(100)
+);
+
+ALTER TABLE contact_person ADD CONSTRAINT PK_contact_person PRIMARY KEY (studentID);
+
+
+CREATE TABLE instrument_rental (
+ rentalID VARCHAR(10) NOT NULL,
+ instrumentID VARCHAR(10) NOT NULL,
+ rental_priceID VARCHAR(10) NOT NULL,
+ studentID VARCHAR(10) NOT NULL,
+ rental_start_date DATE NOT NULL,
+ rental_end_date DATE NOT NULL
+);
+
+ALTER TABLE instrument_rental ADD CONSTRAINT PK_instrument_rental PRIMARY KEY (rentalID);
+
+
+CREATE TABLE lesson (
+ lessonID VARCHAR(10) NOT NULL,
+ lesson_type VARCHAR(10) NOT NULL,
+ level VARCHAR(20) NOT NULL,
+ instrument VARCHAR(20) NOT NULL,
+ time_slot TIMESTAMP(10) NOT NULL,
+ max_students INT NOT NULL,
+ min_students INT NOT NULL,
+ current_enrolled INT NOT NULL,
+ priceID VARCHAR(10) NOT NULL,
+ tgt_genre VARCHAR(20),
+ instructorID VARCHAR(10)
+);
+
+ALTER TABLE lesson ADD CONSTRAINT PK_lesson PRIMARY KEY (lessonID);
+
+
+CREATE TABLE payment (
+ paymentID VARCHAR(10) NOT NULL,
+ amount  FLOAT(10) NOT NULL,
+ priceID VARCHAR(10) NOT NULL
+);
+
+ALTER TABLE payment ADD CONSTRAINT PK_payment PRIMARY KEY (paymentID);
+
+
+CREATE TABLE sibling (
+ studentID VARCHAR(10) NOT NULL,
+ siblingID VARCHAR(10) NOT NULL
+);
+
+ALTER TABLE sibling ADD CONSTRAINT PK_sibling PRIMARY KEY (studentID,siblingID);
+
+
+CREATE TABLE student_lesson (
+ lessonID VARCHAR(10) NOT NULL,
+ studentID VARCHAR(10) NOT NULL
+);
+
+ALTER TABLE student_lesson ADD CONSTRAINT PK_student_lesson PRIMARY KEY (lessonID,studentID);
+
+
+CREATE TABLE student_payment (
+ paymentID VARCHAR(10) NOT NULL,
+ studentID VARCHAR(10) NOT NULL
+);
+
+ALTER TABLE student_payment ADD CONSTRAINT PK_student_payment PRIMARY KEY (paymentID);
+
+
+CREATE TABLE instructor_payment (
+ paymentID VARCHAR(10) NOT NULL,
+ instructorID VARCHAR(10) NOT NULL
+);
+
+ALTER TABLE instructor_payment ADD CONSTRAINT PK_instructor_payment PRIMARY KEY (paymentID);
+
+
+ALTER TABLE rental_pricing ADD CONSTRAINT FK_rental_pricing_0 FOREIGN KEY (instrumentID) REFERENCES instrument (instrumentID);
+
+
+ALTER TABLE contact_person ADD CONSTRAINT FK_contact_person_0 FOREIGN KEY (studentID) REFERENCES student (studentID);
+
+
+ALTER TABLE instrument_rental ADD CONSTRAINT FK_instrument_rental_0 FOREIGN KEY (instrumentID) REFERENCES instrument (instrumentID);
+ALTER TABLE instrument_rental ADD CONSTRAINT FK_instrument_rental_1 FOREIGN KEY (rental_priceID) REFERENCES rental_pricing (rental_priceID);
+ALTER TABLE instrument_rental ADD CONSTRAINT FK_instrument_rental_2 FOREIGN KEY (studentID) REFERENCES student (studentID);
+
+
+ALTER TABLE lesson ADD CONSTRAINT FK_lesson_0 FOREIGN KEY (priceID) REFERENCES pricing (priceID);
+ALTER TABLE lesson ADD CONSTRAINT FK_lesson_1 FOREIGN KEY (instructorID) REFERENCES instructor (instructorID);
+
+
+ALTER TABLE payment ADD CONSTRAINT FK_payment_0 FOREIGN KEY (priceID) REFERENCES pricing (priceID);
+
+
+ALTER TABLE sibling ADD CONSTRAINT FK_sibling_0 FOREIGN KEY (studentID) REFERENCES student (studentID);
+ALTER TABLE sibling ADD CONSTRAINT FK_sibling_1 FOREIGN KEY (siblingID) REFERENCES student (studentID);
+
+
+ALTER TABLE student_lesson ADD CONSTRAINT FK_student_lesson_0 FOREIGN KEY (lessonID) REFERENCES lesson (lessonID);
+ALTER TABLE student_lesson ADD CONSTRAINT FK_student_lesson_1 FOREIGN KEY (studentID) REFERENCES student (studentID);
+
+
+ALTER TABLE student_payment ADD CONSTRAINT FK_student_payment_0 FOREIGN KEY (paymentID) REFERENCES payment (paymentID);
+
+
+ALTER TABLE instructor_payment ADD CONSTRAINT FK_instructor_payment_0 FOREIGN KEY (paymentID) REFERENCES payment (paymentID);
+
+
+
