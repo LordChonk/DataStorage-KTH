@@ -3,25 +3,27 @@
 ## query ##
 
 SELECT 
-    EXTRACT(MONTH FROM time_slot) AS Month, 
+    TO_CHAR(time_slot, 'Month') AS Month, 
     COUNT(*) AS Total,
     COUNT(CASE WHEN lesson_type = 'Individual' THEN 1 END) AS Individual,
     COUNT(CASE WHEN lesson_type = 'Group' THEN 1 END) AS Group,
     COUNT(CASE WHEN lesson_type = 'Ensemble' THEN 1 END) AS Ensemble
 FROM lesson
 WHERE EXTRACT(YEAR FROM time_slot) = 2023 
-GROUP BY EXTRACT(MONTH FROM time_slot)
-ORDER BY Month;
+GROUP BY TO_CHAR(time_slot, 'Month')
+ORDER BY MIN(time_slot); 
+
 
 ## output ##
 
- month | total | individual | group | ensemble
--------+-------+------------+-------+----------
-     1 |     4 |          2 |     2 |        0
-     2 |     1 |          0 |     1 |        0
-     3 |     2 |          1 |     0 |        1
-    12 |    13 |          0 |     0 |       13
+   month   | total | individual | group | ensemble
+-----------+-------+------------+-------+----------
+ January   |     4 |          2 |     2 |        0
+ February  |     1 |          0 |     1 |        0
+ March     |     2 |          1 |     0 |        1
+ December  |    13 |          0 |     0 |       13
 (4 rows)
+
 
 
 ## data in table lesson ##
