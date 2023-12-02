@@ -89,6 +89,29 @@ LEFT JOIN (
 GROUP BY sib_count.No_of_Siblings
 ORDER BY No_of_Siblings;
 
+## query using materialized view ##
+
+CREATE MATERIALIZED VIEW sibling_count AS
+SELECT 
+    student.studentID, 
+    COALESCE(COUNT(sibling.siblingID), 0) AS No_of_Siblings
+FROM 
+    student
+LEFT JOIN 
+    sibling ON student.studentID = sibling.studentID
+GROUP BY 
+    student.studentID;
+
+SELECT 
+    No_of_Siblings, 
+    COUNT(*) AS No_of_Students
+FROM 
+    sibling_count
+GROUP BY 
+    No_of_Siblings
+ORDER BY 
+    No_of_Siblings;
+
 ## output ##
 
  no_of_siblings | no_of_students
@@ -166,7 +189,7 @@ SELECT
     COUNT(*) AS "No of Lessons"
 FROM lesson
 JOIN instructor ON lesson.instructorID = instructor.instructorID
-WHERE EXTRACT(MONTH FROM lesson.time_slot) = 3  
+WHERE EXTRACT(MONTH FROM lesson.time_slot) = 12  
   AND EXTRACT(YEAR FROM lesson.time_slot) = 2023  
 GROUP BY instructor.instructorID, instructor.name
 HAVING COUNT(*) > 0
@@ -250,7 +273,7 @@ For a different month, change the 3 in the line 'WHERE EXTRACT(MONTH FROM lesson
 
 
 SELECT 
-    TO_CHAR(time_slot, 'Day') AS Day, 
+    TRIM(TO_CHAR(time_slot, 'Day')) AS Day, 
     tgt_genre AS Genre, 
     CASE 
         WHEN max_students - current_enrolled = 0 THEN 'No Seats'
@@ -260,18 +283,19 @@ SELECT
 FROM lesson
 WHERE lesson_type = 'Ensemble'
   AND time_slot BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
-ORDER BY Genre, Day;
+ORDER BY time_slot, Genre;
 
 ## output ##
 
-    day    | genre | No of Free Seats
------------+-------+------------------
- Monday    | Blues | No Seats
- Monday    | Jazz  | 1 or 2 Seats
- Tuesday   | Jazz  | 1 or 2 Seats
- Friday    | Rock  | 1 or 2 Seats
- Thursday  | Rock  | Many Seats
-(5 rows)
+   day    |   genre   | No of Free Seats
+----------+-----------+------------------
+ Monday   | Blues     | No Seats
+ Monday   | Jazz      | 1 or 2 Seats
+ Tuesday  | Jazz      | 1 or 2 Seats
+ Thursday | Rock      | Many Seats
+ Friday   | Folk      | 1 or 2 Seats
+ Friday   | Classical | 1 or 2 Seats
+(6 rows)
 
 ## NOTE ##
 This output may change depending on when the assignment is graded as the query uses the current date and finds lessons within 7 days ahead
